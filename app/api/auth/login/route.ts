@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { getUserByEmail } from "@/lib/db"
-import { compare } from "bcrypt"
-import { sign } from "jsonwebtoken"
+import { verifyPassword } from "@/lib/auth"
+import { sign } from "@/lib/jwt"
 
 export async function POST(request: NextRequest) {
   try {
@@ -14,16 +14,14 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
-    // Verify password
-    const passwordMatch = await compare(password, user.password)
+    // Verify password using our custom function
+    const passwordMatch = await verifyPassword(password, user.password)
     if (!passwordMatch) {
       return NextResponse.json({ error: "Invalid email or password" }, { status: 401 })
     }
 
     // Create JWT token
-    const token = sign({ id: user._id, email: user.email }, process.env.JWT_SECRET || "fallback_secret", {
-      expiresIn: "7d",
-    })
+    const token = await sign({ id: user._id, email: user.email })
 
     // Remove password from response
     const { password: _, ...userWithoutPassword } = user

@@ -66,8 +66,7 @@
     "mongodb-client-encryption": "latest",
     "@aws-sdk/credential-providers": "latest",
     "mongodb": "latest",
-    "bcryptjs": "latest",
-    "jsonwebtoken": "latest"
+    "jose": "latest"
   },
   "devDependencies": {
     "@types/node": "^22",

@@ -1,6 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server"
 import { createUser, getUserByEmail } from "@/lib/db"
-import { hash } from "bcrypt"
+import { hashPassword } from "@/lib/auth"
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,8 +13,8 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "User with this email already exists" }, { status: 400 })
     }
 
-    // Hash the password
-    const hashedPassword = await hash(password, 10)
+    // Hash the password using our custom function
+    const hashedPassword = await hashPassword(password)
 
     // Create new user
     const user = await createUser({
